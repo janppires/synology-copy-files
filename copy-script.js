@@ -16,6 +16,14 @@ const getDateTaken = (filepath) => {
   return moment(stats.birthtime).format();
 }
 
+const generateNewFilename = (file, counter) => {
+  const parts = file.filename.split('.');
+  const name = parts[0];
+  const extension = parts[1];
+  return `${path.join(file.target, name)} (${++counter}).${extension}`;
+
+}
+
 const processFiles = (folderPath) => {
   const files = fs.readdirSync(folderPath);
 
@@ -35,13 +43,24 @@ const processFiles = (folderPath) => {
 
   for(const file of result) {
     fs.mkdirSync(file.target, { recursive: true });
-    const destinationFile = path.join(file.target, file.filename);
-    if(fs.existsSync(destinationFile)) {
-      console.log('file found: ', destinationFile);
-    } else {
+    let destinationFile = path.join(file.target, file.filename);
+    
+    let counter = 0;
+    while (fs.existsSync(destinationFile)) {
+      const file1 = fs.readFileSync(file.source);
+      const file2 = fs.readFileSync(destinationFile);
+
+      if (file1.equals(file2)) {
+        break;
+      } else {
+        destinationFile = generateNewFilename(file, counter);
+        console.log('The files are not the same. Generating new filename: ', destinationFile);
+      }
+    }
+
+    if(!fs.existsSync(destinationFile)) {
       fs.copyFileSync(file.source, destinationFile);
     }
-    
   }
 }
 
