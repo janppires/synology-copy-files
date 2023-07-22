@@ -8,8 +8,7 @@ const DESTINATION_FOLDER = '.mytemp/destination';
 const getDestinationFolder = (date) => {
   const year = date.slice(0, 4);
   const month = date.slice(5, 7);
-  const day = date.slice(8, 10);
-  return path.join(DESTINATION_FOLDER, year, month, day);
+  return path.join(DESTINATION_FOLDER, year, month);
 }
 
 const getDateTaken = (filepath) => {
@@ -36,7 +35,13 @@ const processFiles = (folderPath) => {
 
   for(const file of result) {
     fs.mkdirSync(file.target, { recursive: true });
-    fs.copyFileSync(file.source, path.join(file.target, file.filename));
+    const destinationFile = path.join(file.target, file.filename);
+    if(fs.existsSync(destinationFile)) {
+      console.log('file found: ', destinationFile);
+    } else {
+      fs.copyFileSync(file.source, destinationFile);
+    }
+    
   }
 }
 
