@@ -2,8 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const moment = require("moment");
 
-const SOURCE_FOLDER = './original';
-const DESTINATION_FOLDER = './destination';
+const SOURCE_FOLDER = '.mytemp/origin';
+const DESTINATION_FOLDER = '.mytemp/destination';
 
 const getDestinationFolder = (date) => {
   const year = date.slice(0, 4);
