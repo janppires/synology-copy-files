@@ -20,8 +20,7 @@ const generateNewFilename = (file, counter) => {
   const parts = file.filename.split('.');
   const name = parts[0];
   const extension = parts[1];
-  return `${path.join(file.target, name)} (${++counter}).${extension}`;
-
+  return `${path.join(file.target, name)} (${counter}).${extension}`;
 }
 
 const processFiles = (folderPath) => {
@@ -40,7 +39,7 @@ const processFiles = (folderPath) => {
       filename: file
     })
   }
-
+  console.log(`Processing folder ${folderPath} with ${result.length} files found`);
   for(const file of result) {
     fs.mkdirSync(file.target, { recursive: true });
     let destinationFile = path.join(file.target, file.filename);
@@ -51,9 +50,10 @@ const processFiles = (folderPath) => {
       const file2 = fs.readFileSync(destinationFile);
 
       if (file1.equals(file2)) {
+        console.log(`Found same file ${file.source} in ${file.target}`);
         break;
       } else {
-        destinationFile = generateNewFilename(file, counter);
+        destinationFile = generateNewFilename(file, ++counter);
         console.log('The files are not the same. Generating new filename: ', destinationFile);
       }
     }
